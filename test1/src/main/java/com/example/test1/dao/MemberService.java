@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.test1.mapper.MemberMapper;
+import com.example.test1.model.Board;
 import com.example.test1.model.Member;
 
 @Service
@@ -36,6 +37,41 @@ public class MemberService {
 			System.out.println("실패");
 			resultMap.put("result", "fail");
 		}
+		
+		return resultMap;
+	}
+
+	public HashMap<String, Object> addMember(HashMap<String, Object> map) {
+		
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int num = memberMapper.insertMember(map);
+		
+		if(num > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		
+		return resultMap;
+	}
+
+	public HashMap<String, Object> checkId(HashMap<String, Object> map) {
+		
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		Member user = memberMapper.checkId(map);
+		
+		int count = user != null ? 1 : 0;
+		
+		resultMap.put("count", count); 
+		
+//		if(count == 1) {
+//			resultMap.put("user", user);
+//			resultMap.put("result", "success");
+//		} else {
+//			resultMap.put("result", "fail");
+//		}
 		
 		return resultMap;
 	}

@@ -8,4 +8,15 @@
 		FROM MEMBER
 		WHERE USERID = #{userId} AND PASSWORD = #{pwd}
 	</select>
+	
+	<insert id="insertMember" parameterType="hashmap">
+		INSERT INTO MEMBER(USERID, PASSWORD, USERNAME, ADDRESS, STATUS, CDATETIME)
+		VALUES(#{userId}, #{pwd}, #{userName}, #{address}, #{status}, SYSDATE)
+	</insert>
+	
+	<select id="checkId" parameterType="hashmap" resultType="com.example.test1.model.Member">
+		SELECT *
+		FROM MEMBER
+		WHERE USERID = #{userId}
+	</select>
 </mapper>
