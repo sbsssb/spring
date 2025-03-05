@@ -76,4 +76,25 @@ public class MemberService {
 		return resultMap;
 	}
 	
+	public HashMap<String, Object> getMember(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		Member member = memberMapper.selectMember(map);
+		if(member != null) {
+			resultMap.put("member", member);
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> memberRemoveList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		memberMapper.deleteMemberList(map);
+		resultMap.put("result", "success");
+
+		return resultMap;
+	}
+	
 }

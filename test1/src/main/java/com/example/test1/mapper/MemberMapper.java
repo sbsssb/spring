@@ -14,5 +14,9 @@ public interface MemberMapper {
 	int insertMember(HashMap<String, Object> map);
 
 	Member checkId(HashMap<String, Object> map);
+	
+	Member selectMember(HashMap<String, Object> map);
+
+	void deleteMemberList(HashMap<String, Object> map);
 
 }

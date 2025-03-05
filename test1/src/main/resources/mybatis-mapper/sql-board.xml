@@ -18,6 +18,7 @@
 		<if test="searchOption != null and searchOption == 'name'">
 			AND USERNAME LIKE '%' || #{keyword} || '%' 
 		</if>
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
 	</select>
 	<insert id="insertBoard" parameterType="hashmap">
 		INSERT INTO BOARD(BOARDNO, TITLE, CONTENTS, USERID, CNT, CDATETIME, UDATETIME)
@@ -50,6 +51,45 @@
 		FROM BOARD 
 		WHERE BOARDNO = #{boardNo}
 	</delete>
+	
+	<delete id="deleteBoardList" parameterType="hashmap">
+		DELETE 
+		FROM BOARD 
+		WHERE BOARDNO IN
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach> 
+	</delete>
+	
+	<select id="selectBoardCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM BOARD B
+		INNER JOIN MEMBER M ON B.USERID = M.USERID
+		WHERE 1=1
+		<if test="searchOption != null and searchOption == 'all'">
+			AND (TITLE LIKE '%' || #{keyword} || '%' 
+					OR USERNAME LIKE '%' || #{keyword} || '%') 
+		</if>
+		<if test="searchOption != null and searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption != null and searchOption == 'name'">
+			AND USERNAME LIKE '%' || #{keyword} || '%' 
+		</if>
+	</select>
+	
+	<select id="selectCommentList" parameterType="hashmap" resultType="com.example.test1.model.Comment">
+		SELECT *
+         FROM BOARD_COMMENT 
+         WHERE BOARDNO = #{boardNo}
+         ORDER BY CDATETIME ASC
+	</select>
+	
+	<insert id="insertComment" parameterType="hashmap">
+		INSERT INTO BOARD_COMMENT(COMMENTNO, BOARDNO, CONTENTS, USERID, CDATETIME, UDATETIME)
+		VALUES(COMMENT_SEQ.NEXTVAL, #{boardNo}, #{comment}, #{userId}, SYSDATE, SYSDATE)
+	</insert>
+	
 </mapper>
 
 

@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-	<script src="js/page-change.js"></script>
+	<!-- <script src="js/page-change.js"></script> -->
 	<title>첫번째 페이지</title>
 	<style>
 		table, tr, td, th{
@@ -24,18 +24,23 @@
 	<div id="app">
 		<table>
 			<tr>
+				<th><input type="checkbox"></th>
 				<th>아이디</th>
 				<th>이름</th>
 				<th>주소</th>
 				<th>삭제</th>
 			</tr>
 			<tr v-for="item in list">
+				<td><input type="checkbox" :value="item.userId" v-model="selectList"></td>
 				<td>{{item.userId}}</td>
 				<td>{{item.userName}}</td>
 				<td>{{item.address}}</td>
 				<td><button @click="fnRemove(item.userId)">삭제</button></td>
 			</tr>
 		</table>
+		<div>
+			<button @click="fnRemoveList">삭제</button>
+		</div>
 	</div>
 </body>
 </html>
@@ -43,7 +48,8 @@
     const app = Vue.createApp({
         data() {
             return {
-                list : []
+                list : [],
+				selectList : []
             };
         },
         methods: {
@@ -81,6 +87,22 @@
 					
 					}
 				});
+			},
+			fnRemoveList : function() {
+				var self = this;
+				var fList = JSON.stringify(self.selectList);
+                var param = {selectList : fList};
+                $.ajax({
+					url:"/member/remove-list.dox",
+					dataType:"json",	
+					type : "POST", 
+					data : param,
+					success : function(data) { 
+						console.log(data);
+                        self.fnMemberList();
+					}
+				});
+            
 			}
 			
         }, // methonds

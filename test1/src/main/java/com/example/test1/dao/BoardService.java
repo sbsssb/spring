@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.test1.mapper.BoardMapper;
 import com.example.test1.model.Board;
+import com.example.test1.model.Comment;
 
 @Service
 public class BoardService {
@@ -25,6 +26,10 @@ public class BoardService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			List<Board> list =  boardMapper.selectBoardList(map);
+			
+			int count = boardMapper.selectBoardCnt(map);
+			
+			resultMap.put("count", count); 
 			resultMap.put("list", list); 
 			resultMap.put("result", "success");
 		} catch (Exception e) {
@@ -53,6 +58,9 @@ public class BoardService {
 		}
 		Board info = boardMapper.selectBoard(map);
 		
+		List<Comment> commentList =  boardMapper.selectCommentList(map);
+		resultMap.put("commentList", commentList);
+		
 		resultMap.put("info", info);
 		resultMap.put("result", "success");
 		return resultMap;
@@ -74,4 +82,26 @@ public class BoardService {
 
 		return resultMap;
 	}
+
+	public HashMap<String, Object> boardRemoveList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		boardMapper.deleteBoardList(map);
+		resultMap.put("result", "success");
+
+		return resultMap;
+	}
+
+	
+	// 댓글 추가
+	public HashMap<String, Object> addComment(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		boardMapper.insertComment(map);
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	}
+
+
 }

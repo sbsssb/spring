@@ -27,8 +27,20 @@
             <button @click="fnSearchAddr">주소 검색</button>
         </div>
         <div>
+            <input v-model="user.phoneNum" placeholder="번호 입력">
             <button @click="fnSmsAuth">문자 인증</button>
         </div>
+
+        <div v-if="authFlg">
+            <div v-if="joinFlg" style="color: red;">
+                문자 인증 완료
+            </div>
+            <div v-else>
+                <input v-model="authInputNum" :placeholder="timer">
+                <button @click="fnNumAuth">인증</button>
+            </div>
+        </div>
+
         <div>
             권한 : 
                 <input type="radio" name="status" value="C" v-model="user.status">일반
@@ -53,8 +65,15 @@
                     userName: "",
                     pwd : "",
                     address : "",
-                    status : "C"
-                }
+                    status : "C",
+                    phoneNum: ""
+                },
+                authNum : "", // 서버에서 만든 랜덤 숫자
+                authInputNum : "", // 사용자가 문자로 받고 입력한 숫자
+                authFlg : false, // 인증 번호 입력 상태
+                joinFlg : false,  // 문자 인증 완료 상태
+                timer : "",
+                count : 180
             };
         },
         methods: {
@@ -85,13 +104,13 @@
 						console.log(data);
                         if(self.user.userId == "") {
                             alert("아이디를 입력하세요.");
-                        } else {
-                            if (data.count == 1) {
-                                alert("이미 존재하는 아이디입니다.");
-                            } else {
-                                alert("사용 가능합니다.")
-                            }
+                            return;
+                        }
 
+                        if (data.count == 1) {
+                            alert("이미 존재하는 아이디입니다.");
+                        } else {
+                            alert("사용 가능합니다.")
                         }
                         
 					}
@@ -110,7 +129,9 @@
             },
             fnSmsAuth : function() {
                 var self = this;
-				var nparmap = {};
+				var nparmap = {
+                    phoneNum : self.user.phoneNum
+                };
 				$.ajax({
 					url:"/send-one",
 					dataType:"json",	
@@ -118,9 +139,43 @@
 					data : nparmap,
 					success : function(data) { 
 						console.log(data);
-                        alert("문자 발송 완료");
+                        if(data.response.statusCode == 2000) {
+                            alert("문자 발송 완료");
+                            self.authNum = data.ranStr;
+                            self.authFlg = true;
+                            setInterval(self.fnTimer, 1000);
+                        } else {
+                            alert("잠시 후 다시 시도해 주세요");
+                        }
 					}
 				});
+            },
+            fnNumAuth : function() {
+                let self = this;
+                if(self.authFlg == false) {
+                    alert("문자 인증을 먼저 하세요");
+                    return;
+                }
+                if(self.authNum == self.authInputNum) {
+                    alert("인증되었습니다");
+                    self.joinFlg = true;
+                } else {
+                    alert("인증 번호 다시 확인 바람");
+                }
+            },
+            fnTimer : function() {
+                let self = this;
+                let min = "";
+                let sec = "";
+                min = parseInt(self.count / 60);
+                sec = parseInt(self.count % 60);
+                
+                min = min < 10 ? "0" + min : min;
+                sec = sec < 10 ? "0" + sec : sec;
+
+                self.timer = min + ":" + sec;
+                
+                self.count--;
             }
         },
         mounted() {
