@@ -18,11 +18,17 @@
 		<if test="searchOption != null and searchOption == 'name'">
 			AND USERNAME LIKE '%' || #{keyword} || '%' 
 		</if>
+		ORDER BY B.CDATETIME DESC
 		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
 	</select>
-	<insert id="insertBoard" parameterType="hashmap">
+	<insert id="insertBoard" parameterType="hashmap" useGeneratedKeys="true" keyColumn="boardNo" keyProperty="boardNo">
 		INSERT INTO BOARD(BOARDNO, TITLE, CONTENTS, USERID, CNT, CDATETIME, UDATETIME)
 		VALUES(BOARD_SEQ.NEXTVAL, #{title}, #{contents}, #{userId}, 0, SYSDATE, SYSDATE)
+	</insert>
+	
+	<insert id="insertBoardFile" parameterType="hashmap" useGeneratedKeys="true" keyColumn="boardNo" keyProperty="boardNo">
+		INSERT INTO BOARD_FILE(FILENO, BOARDNO, FILEPATH, FILENAME, FILEORGNAME, FILESIZE, FILEETC)
+		VALUES(FILE_SEQ.NEXTVAL, #{boardNo}, #{path}, #{filename}, #{originFilename}, #{size}, #{extName})
 	</insert>
 	
 	<select id="selectBoard" parameterType="hashmap" resultType="com.example.test1.model.Board">
@@ -31,6 +37,12 @@
 		WHERE BOARDNO = #{boardNo}
 		
 	</select>
+	<select id="selectFile" parameterType="hashmap" resultType="com.example.test1.model.File">
+		SELECT * 
+		FROM BOARD_FILE
+		WHERE BOARDNO = #{boardNo}
+	</select>
+	
 	<update id="updateBoard" parameterType="hashmap">
 		UPDATE BOARD
 		SET

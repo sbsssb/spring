@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.test1.mapper.BoardMapper;
 import com.example.test1.model.Board;
 import com.example.test1.model.Comment;
+import com.example.test1.model.File;
 
 @Service
 public class BoardService {
@@ -44,6 +45,9 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		boardMapper.insertBoard(map);
+		System.out.println(map.get("boardNo"));
+		
+		resultMap.put("boardNo", map.get("boardNo"));
 		resultMap.put("result", "success");
 		
 		return resultMap;
@@ -59,6 +63,11 @@ public class BoardService {
 		Board info = boardMapper.selectBoard(map);
 		
 		List<Comment> commentList =  boardMapper.selectCommentList(map);
+		
+		List<File> file = boardMapper.selectFile(map);
+		
+		resultMap.put("file", file);
+		
 		resultMap.put("commentList", commentList);
 		
 		resultMap.put("info", info);
@@ -101,6 +110,11 @@ public class BoardService {
 		resultMap.put("result", "success");
 		
 		return resultMap;
+	}
+
+	public void addBoardFile(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		boardMapper.insertBoardFile(map);
 	}
 
 

@@ -16,6 +16,9 @@
 		<div>
             제목 : {{info.title}}
         </div>
+        <div v-for="item in file">
+            <img :src="item.filePath">
+        </div>
         <div>
             내용 : {{info.contents}}
         </div>
@@ -72,7 +75,8 @@
                 commentList : [],
                 editCommentNo : "",
                 editContents : "",
-                comment : ""
+                comment : "",
+                fileList : []
             };
         },
         methods: {
@@ -91,6 +95,7 @@
 						console.log(data);
                         self.info = data.info;
                         self.commentList = data.commentList;
+                        self.file = data.file;
                         console.log(data.commentList);
 					}
 				});
@@ -137,7 +142,7 @@
                         if(data.msg=="success") {
                             alert("수정되었습니다.");
                             self.editCommentNo = '';
-                            self.fnInfo();
+                            self.fnGetBoard();
                         } else {
                             alert("오류발생!");
                        }
@@ -150,7 +155,7 @@
                 let nparmap = {
                     comment : self.comment,
                     boardNo : self.boardNo,
-                    userId : "${sessionId}"
+                    userId : self.sessionId
                 };
                 $.ajax({
 					url:"/board/comment-add.dox",
@@ -158,12 +163,8 @@
 					type : "POST", 
 					data : nparmap,
 					success : function(data) { 
-						if(data.msg=="success"){
-                        alert("댓글이 등록되었습니다.");
+						alert("댓글이 등록되었습니다.");
                         self.fnGetBoard();
-                       } else {
-                        alert("오류발생!");
-                       }
 					}
 				});
             }

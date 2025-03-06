@@ -30,6 +30,10 @@ public class MemberService {
 			session.setAttribute("sessionId", member.getUserId());
 			session.setAttribute("sessionName", member.getUserName());
 			session.setAttribute("sessionStatus", member.getStatus());
+			session.setMaxInactiveInterval(60 * 60); // 60 * 60초
+			
+//			session.invalidate(); //세션 정보 삭제
+//			session.removeAttribute("sessionId"); //1개씩 삭제
 			
 			resultMap.put("member", member);
 			resultMap.put("result", "success");

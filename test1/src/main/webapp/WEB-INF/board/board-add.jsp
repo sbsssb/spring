@@ -23,6 +23,7 @@
 <body>
 	<div id="app">
 		<div> 제목 : <input v-model="title"> </div>
+        <div><input type="file" id="file1" name="file1" accept=".jpg, .png"></div>
         <div style="width: 500px; height: 300px;">
             <div id="editor"></div>
         </div>
@@ -57,9 +58,34 @@
 					success : function(data) { 
 						console.log(data);
                         alert("저장되었습니다.");
-                        location.href ="/board/list.do";
+
+                        if($("#file1")[0].files.length > 0) {
+                            var form = new FormData();
+                            form.append( "file1",  $("#file1")[0].files[0] );
+                            form.append( "boardNo",  data.boardNo); // 임시 pk
+                            self.upload(form); 
+                            location.href ="/board/list.do";
+                        } else {
+                            location.href ="/board/list.do";
+                        }
+
+                        
 					}
 				});
+            },
+            
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/fileUpload.dox"
+                    , type : "POST"
+                    , processData : false
+                    , contentType : false
+                    , data : form
+                    , success:function(response) { 
+                        
+                    }	           
+                });
             }
         },
         mounted() {

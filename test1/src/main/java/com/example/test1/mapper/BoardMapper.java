@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.example.test1.model.Board;
 import com.example.test1.model.Comment;
+import com.example.test1.model.File;
 
 @Mapper
 public interface BoardMapper {
@@ -30,5 +31,9 @@ public interface BoardMapper {
 	List<Comment> selectCommentList(HashMap<String, Object> map);
 
 	void insertComment(HashMap<String, Object> map);
+
+	void insertBoardFile(HashMap<String, Object> map);
+
+	List<File> selectFile(HashMap<String, Object> map);
 
 }
