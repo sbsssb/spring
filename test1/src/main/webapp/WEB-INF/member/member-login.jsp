@@ -19,6 +19,7 @@
 			비밀번호 : <input v-model="pwd">  
 		</div>
 		<button @click="fnLogin">로그인</button>
+		<button @click="fnSearchPass">비밀번호 찾기</button>
 	</div>
 </body>
 </html>

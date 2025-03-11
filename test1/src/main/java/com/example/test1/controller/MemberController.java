@@ -40,6 +40,18 @@ public class MemberController {
         return "/jusoPopup"; 
     }
 	
+	@RequestMapping("/pay.do") 
+    public String pay(Model model) throws Exception{
+		
+        return "/pay"; 
+    }
+	
+	@RequestMapping("/auth.do") 
+    public String auth(Model model) throws Exception{
+		
+        return "/auth"; 
+    }
+	
 	// 로그인
 	@RequestMapping(value = "/member/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
