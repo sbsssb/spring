@@ -46,4 +46,28 @@ public class ProductService {
 		return resultMap;
 	}
 
+	// 상품 추가
+	public HashMap<String, Object> addProduct(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		productMapper.insertProduct(map);
+		System.out.println(map.get("itemNo"));
+		
+		resultMap.put("itemNo", map.get("itemNo"));
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	
+	}
+
+	public void addProductFile(HashMap<String, Object> map) {
+		try {
+			productMapper.insertProductFile(map);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		
+	}
+
 }

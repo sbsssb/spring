@@ -14,4 +14,8 @@ public interface ProductMapper {
 
 	Product selectProduct(HashMap<String, Object> map);
 
+	void insertProduct(HashMap<String, Object> map);
+
+	void insertProductFile(HashMap<String, Object> map);
+
 }

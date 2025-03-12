@@ -30,6 +30,11 @@
             <a href="#">이벤트</a>
             <a href="#">고객센터</a>
         </nav>
+
+        <!-- 로그인 버튼 -->
+        <div class="login-button">
+        <button @click="login">로그인</button>
+    
     </header>
 </body>
 </html>

@@ -15,4 +15,13 @@
 		WHERE P.ITEM_NO = #{itemNo}
 	</select>
 	
+	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyProperty="itemNo" keyColumn="ITEM_NO">
+		INSERT INTO TBL_PRODUCT
+		VALUES(PRODUCT_SEQ.NEXTVAL, #{itemName}, #{price}, #{itemInfo})
+	</insert>
+	
+	<insert id="insertProductFile" parameterType="hashmap" useGeneratedKeys="true" keyColumn="ITEM_NO" keyProperty="itemNo">
+		INSERT INTO TBL_PRODUCT_IMG
+		VALUES(#{itemNo}, #{filepath}, #{filename}, #{thumbNail})
+	</insert>
 </mapper>

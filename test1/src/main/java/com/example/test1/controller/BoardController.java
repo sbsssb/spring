@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.test1.common.Common;
 import com.example.test1.dao.BoardService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -132,69 +133,73 @@ public class BoardController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/board/file.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String fileInfo(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = boardService.addComment(map);
+		return new Gson().toJson(resultMap);
+	}
+	
+	
+	
 	// 파일 업로드
 	@RequestMapping("/fileUpload.dox")
-	public String result(@RequestParam("file1") MultipartFile multi, @RequestParam("boardNo") int boardNo, HttpServletRequest request,HttpServletResponse response, Model model)
-	{
+	public String result(@RequestParam("file1") List<MultipartFile> files, 
+	                     @RequestParam("boardNo") int boardNo, 
+	                     HttpServletRequest request, HttpServletResponse response, 
+	                     Model model) {
 		String url = null;
-		String path="c:\\img";
-		try {
+	    String path = "c:\\img";
 
-			//String uploadpath = request.getServletContext().getRealPath(path);
-			String uploadpath = path;
-			String originFilename = multi.getOriginalFilename();
-			String extName = originFilename.substring(originFilename.lastIndexOf("."),originFilename.length());
-			long size = multi.getSize();
-			String saveFileName = genSaveFileName(extName);
-			
-			System.out.println("uploadpath : " + uploadpath);
-			System.out.println("originFilename : " + originFilename);
-			System.out.println("extensionName : " + extName);
-			System.out.println("size : " + size);
-			System.out.println("saveFileName : " + saveFileName);
-			String path2 = System.getProperty("user.dir");
-			System.out.println("Working Directory = " + path2 + "\\src\\webapp\\img");
-			if(!multi.isEmpty())
-			{
-				File file = new File(path2 + "\\src\\main\\webapp\\img", saveFileName);
-				multi.transferTo(file);
-				
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("filename", saveFileName);
-				map.put("path", "../img/" + saveFileName);
-				map.put("originFilename", originFilename);
-				map.put("extName", extName);
-				map.put("size", size);
-				map.put("boardNo", boardNo);
-				
-				// insert 쿼리 실행
-			   // testService.addBoardImg(map);
-				boardService.addBoardFile(map);
-				
-				model.addAttribute("filename", multi.getOriginalFilename());
-				model.addAttribute("uploadPath", file.getAbsolutePath());
-				
-				return "redirect:board/list.do";
-			}
-		}catch(Exception e) {
-			System.out.println(e);
-		}
-		return "redirect:board/list.do";
+	    try {
+	        String uploadpath = path;
+
+	        for (MultipartFile multi : files) {
+	            if (!multi.isEmpty()) {
+	                String originFilename = multi.getOriginalFilename();
+	                String extName = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+	                long size = multi.getSize();
+	                String saveFileName = Common.genSaveFileName(extName);
+
+	                System.out.println("uploadpath : " + uploadpath);
+	                System.out.println("originFilename : " + originFilename);
+	                System.out.println("extensionName : " + extName);
+	                System.out.println("size : " + size);
+	                System.out.println("saveFileName : " + saveFileName);
+
+	                // 현재 디렉토리 경로 가져오기
+	                String path2 = System.getProperty("user.dir");
+	                System.out.println("Working Directory = " + path2 + "\\src\\webapp\\img");
+
+	                // 파일 저장 경로 설정
+	                File saveFile = new File(path2 + "\\src\\main\\webapp\\img", saveFileName);
+	                multi.transferTo(saveFile);
+
+	                // 데이터 저장 준비
+	                HashMap<String, Object> map = new HashMap<>();
+	                map.put("filename", saveFileName);
+	                map.put("path", "../img/" + saveFileName);
+	                map.put("originFilename", originFilename);
+	                map.put("extName", extName);
+	                map.put("size", size);
+	                map.put("boardNo", boardNo);
+
+	                // 서비스 호출
+	                boardService.addBoardFile(map);
+
+	                // 모델에 데이터 추가
+	                model.addAttribute("filename", originFilename);
+	                model.addAttribute("uploadPath", saveFile.getAbsolutePath());
+	            }
+	        }
+	        return "redirect:board/list.do";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("errorMessage", "파일 업로드 중 에러가 발생했습니다.");
+	        return "errorPage"; // 에러 페이지로 리다이렉트하도록 변경
+	    }
 	}
 
-	private String genSaveFileName(String extName) {
-		String fileName = "";
-		
-		Calendar calendar = Calendar.getInstance();
-		fileName += calendar.get(Calendar.YEAR);
-		fileName += calendar.get(Calendar.MONTH);
-		fileName += calendar.get(Calendar.DATE);
-		fileName += calendar.get(Calendar.HOUR);
-		fileName += calendar.get(Calendar.MINUTE);
-		fileName += calendar.get(Calendar.SECOND);
-		fileName += calendar.get(Calendar.MILLISECOND);
-		fileName += extName;
-		
-		return fileName;
-	}
 }
