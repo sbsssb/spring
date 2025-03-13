@@ -19,7 +19,7 @@
         <h2>제품 목록</h2>
 
         <div class="product-container">
-            <div class="product-card" v-for="item in list">
+            <div class="product-card" v-for="item in list" :key="item.itemNo">
                 <a href="javascript:;" @click="fnGetProduct(item.itemNo)">
                     <img :src="item.filePath" :alt="item.itemName">
                 </a>
@@ -37,25 +37,31 @@
     const app = Vue.createApp({
         data() {
             return {
-                searchQuery: "", // 검색어 저장
+                keyword: "",
                 list : []
             };
         },
         computed: {
-            filteredProducts() {
-                // 검색어를 포함하는 제품만 필터링하여 반환
-                return this.products.filter(product =>
-                    product.name.includes(this.searchQuery)
-                );
-            }
+          
         },
         methods: {
-            searchProducts() {
-                console.log("검색어:", this.searchQuery);
-            },
+            // fnProductList(keyword) {
+            //     var self = this;
+            //     var nparmap = {keyword : self.keyword};
+            //     $.ajax({
+            //         url: "/product/list.dox",
+            //         dataType: "json",    
+            //         type: "POST", 
+            //         data: nparmap,
+            //         success: function(data) { 
+            //             self.list = data.list;
+            //             console.log(data);
+            //         }
+            //     });
+            // },
             fnProductList() {
                 var self = this;
-                var nparmap = {};
+                var nparmap = {keyword : self.keyword};
                 $.ajax({
                     url: "/product/list.dox",
                     dataType: "json",    
@@ -77,5 +83,6 @@
         }
     });
 
-    app.mount('#app');
+    // app.mount("#app");
+    window.app = app.mount("#app");
 </script>

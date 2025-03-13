@@ -18,4 +18,6 @@ public interface ProductMapper {
 
 	void insertProductFile(HashMap<String, Object> map);
 
+	void insertPayProduct(HashMap<String, Object> map);
+
 }

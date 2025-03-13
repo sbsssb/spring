@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.test1.mapper.CommonMapper">
+	<select id="selectMenuList" parameterType="hashmap" resultType="com.example.test1.model.Menu">
+			SELECT M.*, NVL(CNT, 0) AS SUB_CNT
+			FROM TBL_MENU M
+			LEFT JOIN (SELECT PARENT_ID, COUNT(*) AS CNT
+			            FROM TBL_MENU
+			            GROUP BY PARENT_ID
+			) T ON M.MENU_ID = T.PARENT_ID
+			WHERE 1 = 1
+			<if test="depth == 1">
+				AND DEPTH = 1
+			</if>
+			<if test="depth == 2">
+				AND DEPTH = 2
+			</if>
+	</select>
+</mapper>

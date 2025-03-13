@@ -66,7 +66,7 @@ public class ProductController {
 	// 상품 추가
 	@RequestMapping(value = "/product/add.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String peoductAdd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	public String productAdd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = productService.addProduct(map);
@@ -82,12 +82,11 @@ public class ProductController {
 
 //		System.out.println(multi.size());
 		String url = null;
-
 		String path="c:\\img";
 
 		try {
-
-
+			
+			boolean thumbFlg = true;
 
 			for(MultipartFile multi : files) {
 
@@ -96,27 +95,16 @@ public class ProductController {
 				//String uploadpath = request.getServletContext().getRealPath(path);
 
 				String uploadpath = path;
-
 				String originFilename = multi.getOriginalFilename();
-
 				String extName = originFilename.substring(originFilename.lastIndexOf("."),originFilename.length());
-
 				long size = multi.getSize();
-
 				String saveFileName = Common.genSaveFileName(extName);
-				
-				boolean thumbFlg = true;
-
 				
 
 				System.out.println("uploadpath : " + uploadpath);
-
 				System.out.println("originFilename : " + originFilename);
-
 				System.out.println("extensionName : " + extName);
-
 				System.out.println("size : " + size);
-
 				System.out.println("saveFileName : " + saveFileName);
 
 				String path2 = System.getProperty("user.dir");
@@ -130,42 +118,31 @@ public class ProductController {
 					File file = new File(path2 + "\\src\\main\\webapp\\img", saveFileName);
 
 					multi.transferTo(file);
-
 					
-
 					HashMap<String, Object> map = new HashMap<String, Object>();
 
 					map.put("filename", saveFileName);
-
 					map.put("filepath", "../img/" + saveFileName);
-
 					map.put("itemNo", itemNo);
 
 					String thumbNail = thumbFlg ? "Y" : "N";
 
 					map.put("thumbNail", thumbNail);
-
 					
-
 					productService.addProductFile(map);
 
 					thumbFlg = false;
 	
-
 					// insert 쿼리 실행
 
 					model.addAttribute("filename", multi.getOriginalFilename());
-
 					model.addAttribute("uploadPath", file.getAbsolutePath());
 
 
 				}
 
 			}
-
 				return "redirect:/product/list.do";
-
-			//}
 
 		}catch(Exception e) {
 
@@ -177,7 +154,18 @@ public class ProductController {
 
 	}
 
-
+	// 결제
+	@RequestMapping(value = "/product/pay.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String productPay(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int amount = Integer.parseInt(map.get("amount").toString());
+		map.put("amount", amount);
+		
+		resultMap = productService.payProduct(map);
+		return new Gson().toJson(resultMap);
+	}
 
 	
 }

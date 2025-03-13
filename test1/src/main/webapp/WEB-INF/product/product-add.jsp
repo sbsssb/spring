@@ -85,7 +85,12 @@
             <div>
                 설명: <input type="text" placeholder="제품 설명을 입력하세요" v-model="itemInfo">
             </div>
-            <div><input type="file" id="file1" name="file1" accept=".jpg, .png" multiple></div>
+            <div>
+                썸네일: <input type="file" id="thumbFile" name="thumbFile" accept=".jpg, .png">
+            </div>
+            <div>
+                제품 설명: <input type="file" id="file1" name="file1" accept=".jpg, .png" multiple>
+            </div>
             <div>
                 <button @click="fnInsertProduct">등록</button>
             </div>
@@ -123,6 +128,9 @@
                             if($("#file1")[0].files.length > 0) {
                                 var form = new FormData();
                                 for(let i = 0; i < $("#file1")[0].files.length; i++) {
+                                    if(i == 0) {
+                                        form.append("file1", $("#thumbFile")[0].files[i]);
+                                    }
                                     form.append("file1", $("#file1")[0].files[i]);
                                 }
                                 form.append( "itemNo",  data.itemNo); // 임시 pk
