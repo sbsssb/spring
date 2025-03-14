@@ -10,5 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CommonMapper {
 
 	List<Menu> selectMenuList(HashMap<String, Object> map);
+	
+	void insertPayProduct(HashMap<String, Object> map);
 
 }

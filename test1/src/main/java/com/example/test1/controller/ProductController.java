@@ -154,18 +154,5 @@ public class ProductController {
 
 	}
 
-	// 결제
-	@RequestMapping(value = "/product/pay.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String productPay(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		
-		int amount = Integer.parseInt(map.get("amount").toString());
-		map.put("amount", amount);
-		
-		resultMap = productService.payProduct(map);
-		return new Gson().toJson(resultMap);
-	}
-
 	
 }

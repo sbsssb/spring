@@ -125,12 +125,11 @@
                         console.log(data.itemNo);
 
                         if(data.result == "success") {
-                            if($("#file1")[0].files.length > 0) {
+                            if($("#file1")[0].files.length > 0 && $("#thumbFile")[0].files.length > 0) {
                                 var form = new FormData();
+                                var list = [];
+                                form.append("file1", $("#thumbFile")[0].files[0]);
                                 for(let i = 0; i < $("#file1")[0].files.length; i++) {
-                                    if(i == 0) {
-                                        form.append("file1", $("#thumbFile")[0].files[i]);
-                                    }
                                     form.append("file1", $("#file1")[0].files[i]);
                                 }
                                 form.append( "itemNo",  data.itemNo); // 임시 pk

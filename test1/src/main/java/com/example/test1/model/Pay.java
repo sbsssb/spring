@@ -7,7 +7,7 @@ public class Pay {
 
 	private String orderId;
 	private String userId;
-	private String amount;
+	private int amount;
 	private String itemNo;
 	private String paymentDate;
 }

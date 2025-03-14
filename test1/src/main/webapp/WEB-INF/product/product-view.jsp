@@ -19,7 +19,16 @@
     <!-- 제품 상세 정보 -->
     <div id="app" class="container">
         <div class="product-detail">
-            <img :src="info.filePath" :alt="info.itemName">
+            <!-- 메인 이미지 -->
+            <img :src="info.filePath" alt="제품 이미지" id="mainImage">
+    
+            <!-- 이미지 슬라이드 (썸네일) - 메인 이미지 아래로 배치 -->
+            <div class="product-image-thumbnails">
+                <img v-for="(img, index) in list" :src="img.filePath" alt="제품 썸네일" 
+                    @click="changeImage(img.filePath)">
+            </div>
+    
+            <!-- 제품 상세 정보 -->
             <div class="detail-info">
                 <h2>{{ info.itemName }}</h2>
                 <p class="price">{{ info.price }} 원</p>
@@ -41,7 +50,9 @@
         data() {
             return {
                 itemNo : "${map.itemNo}",
-                info: {}
+                list: [],
+                info: {},
+                sessionId : "${sessionId}"
             };
         },
         methods: {
@@ -57,47 +68,58 @@
                     type: "POST",
                     data: params,
                     success: function(data) {
+                        self.list = data.list;
                         self.info = data.info;
                         console.log(data);
                     }
                 });
             },
+            changeImage(filePath) {
+                    // 클릭된 이미지로 메인 이미지 변경
+                    document.getElementById('mainImage').src = filePath;
+            },
             fnPayment(){
                 let self = this;
-                let orderId = "test1" + new Date().getDate();
+                // let orderId = "test1" + new Date().getDate();
 
 				IMP.request_pay({
 				    pg: "html5_inicis",
 				    pay_method: "card",
-				    merchant_uid: orderId,
+				    merchant_uid: "test1" + new Date().getTime(),
 				    name: "테스트 결제",
 				    amount: self.info.price,
 				    buyer_tel: "010-0000-0000",
 				  }	, function (rsp) { // callback
 			   	      if (rsp.success) {
-                        var nparmap = {
-                            orderId : orderId,
-                            amount: self.info.price,
-                            itemNo : self.itemNo
-                        };
-                        $.ajax({
-                            url:"/product/pay.dox",
-                            dataType:"json",	
-                            type : "POST", 
-                            data : nparmap,
-                            success : function(data) { 
-                                console.log(data);
-                                
-                            }
-                        });
 						alert("성공");
 						console.log(rsp);
+                        self.fnSave(rsp.merchant_uid);
 			   	      } else {
 			   	        // 결제 실패 시
+                           console.log(rsp);
 						alert("실패");
 			   	      }
 		   	  	});
 			},
+            fnSave : function(merchant_uid) {
+                let self = this;
+                var nparmap = {
+                    orderId : merchant_uid,
+                    amount: self.info.price,
+                    itemNo : self.info.itemNo,
+                    sessionId : self.sessionId
+                };
+                $.ajax({
+                    url:"/product/pay.dox",
+                    dataType:"json",	
+                    type : "POST", 
+                    data : nparmap,
+                    success : function(data) { 
+                        console.log(data);
+                        
+                    }
+                });
+            },
             goBack() {
                 window.history.back();
             }

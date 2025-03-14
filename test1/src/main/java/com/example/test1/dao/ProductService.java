@@ -33,14 +33,10 @@ public class ProductService {
 	public HashMap<String, Object> getProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
+		List<Product> list = productMapper.selectImg(map);
 		Product info = productMapper.selectProduct(map);
 		
-		if (info == null) {
-	        System.out.println("DB 조회 결과: null");
-	    } else {
-	        System.out.println("DB 조회 결과: " + info.toString()); // 조회된 객체 출력
-	    }
-		
+		resultMap.put("list", list);
 		resultMap.put("info", info);
 		resultMap.put("result", "success");
 		return resultMap;
@@ -70,16 +66,5 @@ public class ProductService {
 		
 	}
 
-	public HashMap<String, Object> payProduct(HashMap<String, Object> map) {
-		// TODO Auto-generated method stub
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		productMapper.insertPayProduct(map);
-		
-		resultMap.put("itemNo", map.get("itemNo"));
-		resultMap.put("result", "success");
-		
-		return resultMap;
-	
-	}
 
 }

@@ -13,8 +13,14 @@
 	<select id="selectProduct" parameterType="hashmap" resultType="com.example.test1.model.Product">
 		SELECT * 
 		FROM TBL_PRODUCT P
-		LEFT JOIN TBL_PRODUCT_IMG I ON P.ITEM_NO = I.ITEM_NO AND I.THUMBNAIL = 'Y'
+		INNER JOIN TBL_PRODUCT_IMG I ON P.ITEM_NO = I.ITEM_NO AND I.THUMBNAIL = 'Y'
 		WHERE P.ITEM_NO = #{itemNo}
+	</select>
+	
+	<select id="selectImg" parameterType="hashmap" resultType="com.example.test1.model.Product">
+		SELECT * 
+		FROM TBL_PRODUCT_IMG
+		WHERE ITEM_NO = #{itemNo}
 	</select>
 	
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyProperty="itemNo" keyColumn="ITEM_NO">
@@ -27,8 +33,4 @@
 		VALUES(#{itemNo}, #{filepath}, #{filename}, #{thumbNail})
 	</insert>
 	
-	<insert id="insertPayProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="ITEM_NO" keyProperty="itemNo">
-		INSERT INTO PAYMENT_HISTORY
-		VALUES(#{orderNo}, 'user01', #{amount}, #{itemNo}, SYSDATE)
-	</insert>
 </mapper>

@@ -29,5 +29,17 @@ public class CommonService {
 		
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> payProduct(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		commonMapper.insertPayProduct(map);
+		
+		resultMap.put("itemNo", map.get("itemNo"));
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	
+	}
 
 }
