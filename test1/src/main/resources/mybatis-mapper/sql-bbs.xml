@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.test1.mapper.BbsMapper">
+	<select id="selectBbsList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT * 
+		FROM TBL_BBS
+		WHERE 1=1
+		<if test="searchOption != null and searchOption == 'all'">
+			AND (TITLE LIKE '%' || #{keyword} || '%' 
+					OR USER_ID LIKE '%' || #{keyword} || '%') 
+		</if>
+		<if test="searchOption != null and searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption != null and searchOption == 'name'">
+			AND USER_ID LIKE '%' || #{keyword} || '%' 
+		</if>
+		ORDER BY BBS_NUM DESC
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="selectBbsCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_BBS
+	</select>
+	
+	<insert id="insertBbs" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BBS_NUM" keyProperty="bbsNum">
+		INSERT INTO TBL_BBS
+		VALUES(BBS_SEQ.NEXTVAL, #{title}, #{contents}, 0, #{userId}, SYSDATE, SYSDATE)
+	</insert>
+	
+	<insert id="insertBbsFile" parameterType="hashmap" useGeneratedKeys="true" keyColumn="ITEM_NO" keyProperty="bbsNum">
+		INSERT INTO TBL_PRODUCT_IMG(ITEM_NO, FILEPATH, FILENAME, THUMBNAIL)
+		VALUES(#{bbsNum}, #{filepath}, #{filename}, #{thumbNail})
+	</insert>
+	
+	<select id="selectBbs" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT * 
+		FROM TBL_BBS
+		WHERE BBS_NUM = #{bbsNum}
+	</select>
+	
+	<select id="selectImg" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT * 
+		FROM TBL_PRODUCT_IMG
+		WHERE ITEM_NO = #{bbsNum}
+	</select>
+	
+	<delete id="deleteBbs" parameterType="hashmap">
+		DELETE 
+		FROM TBL_BBS 
+		WHERE BBS_NUM = #{bbsNum}
+	</delete>
+	
+	<update id="updateBbs" parameterType="hashmap">
+		UPDATE TBL_BBS
+		SET
+			TITLE = #{title},
+			CONTENTS = #{contents}
+		WHERE BBS_NUM = #{bbsNum}
+	</update>
+	
+</mapper>
