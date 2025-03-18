@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.test1.mapper.MemberMapper;
@@ -19,13 +20,23 @@ public class MemberService {
 	
 	@Autowired
 	HttpSession session;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	public HashMap<String, Object> memberLogin(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
 		Member member = memberMapper.getMember(map);
 		
+		boolean flg = false;
+		
 		if(member != null) {
+			flg = passwordEncoder.matches((String) map.get("pwd"), member.getPassword());
+		}
+		
+		if(flg) {
 			System.out.println("성공");
 			session.setAttribute("sessionId", member.getUserId());
 			session.setAttribute("sessionName", member.getUserName());
@@ -49,7 +60,14 @@ public class MemberService {
 		
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
+		String hashPwd = passwordEncoder.encode((String)map.get("pwd"));
+		System.out.println(hashPwd);
+		
+		map.put("pwd", hashPwd);
+		
 		int num = memberMapper.insertMember(map);
+		
+		
 		
 		if(num > 0) {
 			resultMap.put("result", "success");

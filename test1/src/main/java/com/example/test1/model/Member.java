@@ -4,6 +4,7 @@ public class Member {
 
 	private String userId;
 	private String userName;
+	private String password;
 	private String address;
 	private String status;
 	
@@ -31,4 +32,13 @@ public class Member {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
+	
 }
