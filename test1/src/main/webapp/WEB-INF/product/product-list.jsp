@@ -75,10 +75,35 @@
             },
             fnGetProduct : function(itemNo) {
                 pageChange("/product/view.do", {itemNo : itemNo});
+            },
+            fnKakao() {
+                var self = this;
+                var nparmap = {
+                    code : self.code
+                };
+                $.ajax({
+                    url: "/kakao.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: nparmap,
+                    success: function (data) {
+                        console.log(data);
+                    
+                        
+                    }
+                });
             }
         },
         mounted() {
             var self = this;
+
+            const queryParams = new URLSearchParams(window.location.search);
+            self.code = queryParams.get('code') || ''; 
+            console.log(self.code);
+            if(self.code != "") {
+                self.fnKakao();
+            }
+            
             self.fnProductList();
         }
     });
